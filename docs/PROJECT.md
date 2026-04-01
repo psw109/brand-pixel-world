@@ -170,20 +170,19 @@
 
 ---
 
-## 6. 기술 스택 (참고안 — 확정이 아님)
+## 6. 기술 스택 (현재 확정안)
 
-개발 시작 시 레포에 맞게 확정하고, 아래 표를 갱신한다.
+현재 단계에서는 아래 스택/패턴으로 개발을 진행한다. 변경 시 이 표와 관련 문서를 함께 갱신한다.
 
-| 영역 | 후보 | 비고 |
+| 영역 | 선택 | 비고 |
 |------|------|------|
-| 월드·입력·픽셀 렌더링 | **Phaser 3** | 타일맵·카메라·스프라이트에 익숙하면 유리 |
-| UI·오버레이·라우팅 | **React** | iframe·모달·자체 페이지 통합에 적합 |
+| 프론트 앱 기반 | **Next.js + TypeScript** | 1차 구현 기본. JavaScript보다 TypeScript를 우선 사용해 도메인 타입(`footprint`, `interaction`)을 강제한다 |
+| 월드·입력·픽셀 렌더링 | **Phaser 3** | 월드는 캔버스 기반으로 구현하고 패닝/타일/스프라이트를 담당한다 |
+| UI·오버레이·라우팅 | **React (Next App Router)** | 오버레이는 DOM 기반으로 구현하고 iframe·모달·내부 페이지 라우팅을 담당한다 |
 | 상태 | **Zustand** 등 가벼운 store | 월드 카메라 / 열린 부지·건물 ID / 오버레이 여부 |
-| 백엔드·저장 (선택) | **Supabase** | 건물·부지 메타데이터, **입점 문의(lead)** 저장, 관리자 조회 |
-| 배포 | **Vercel** 등 | 정적 프론트 + Serverless/API Routes로 POST 수신 가능 |
+| 백엔드·저장 (선택) | **Supabase + Next API Routes(Serverless)** | 별도 상시 백엔드 서버 없이 문의(lead) 저장·조회부터 시작 가능 |
+| 배포 | **Vercel** | Next.js + Serverless/API Routes 배포에 적합 |
 | 관리자 UI | React 라우트 `/admin` 등 + 인증 | 문의 목록·상태 변경 (범위는 단계적으로) |
-
-**Phaser + React:** 월드는 캔버스, 오버레이는 DOM으로 두는 패턴이 흔하다. 이벤트 전달·리사이즈 시 동기화는 구현 시 체크리스트에 넣는다.
 
 ---
 
@@ -191,7 +190,9 @@
 
 ```
 docs/
-  PROJECT_DESIGN.md   ← 이 파일 (전체 개요)
+  PROJECT.md          ← 이 파일 (전체 개요/제품 설계)
+  SETUP.md            ← 로컬 개발 시작/연결 절차
+  ENVIRONMENTS.md     ← Local/Preview/Production 운영 규칙
   (추가) ADR/         ← 중요한 결정만 짧게 (선택)
 ```
 
