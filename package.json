@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:push": "supabase db push",
+    "db:diff": "supabase db diff"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.101.1",
@@ -18,6 +23,7 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "supabase": "^2.84.5",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

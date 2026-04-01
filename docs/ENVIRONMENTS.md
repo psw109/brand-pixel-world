@@ -7,7 +7,7 @@
 | 환경 | 용도 | 배포 트리거 | 도메인 |
 |------|------|-------------|--------|
 | Local | 개인 개발/디버깅 | 수동(`npm run dev`) | localhost |
-| Preview | 스테이징 검증 | `preview` 브랜치 push | Vercel Preview URL |
+| Preview | 스테이징 검증 | `preview`·`feat/*` 등 **main이 아닌 브랜치** push/PR | 브랜치별 Vercel Preview URL |
 | Production | 실서비스 | `main` push/머지 | Vercel Production 도메인 |
 
 ## 2) 브랜치 전략
@@ -37,9 +37,11 @@
 매핑:
 
 - **Production**: 운영 Supabase (`brand-pixel-world`)
-- **Preview (`preview` 브랜치)**: 스테이징 Supabase (`brand-pixel-world-preview`)
+- **Preview (브랜치 미지정 = 모든 Preview 배포)**: 스테이징 Supabase (`brand-pixel-world-preview`)
 
-Vercel 대시보드에서 확인: **Settings → Environment Variables**의 `environments (git branch)` 열.
+`feat/foo`로 올린 Preview도 위 스테이징 DB를 쓴다(환경변수가 “특정 브랜치 전용”이 아닐 때).
+
+Vercel 대시보드에서 확인: **Settings → Environment Variables**의 `environments (git branch)` 열(비어 있으면 전체 Preview).
 
 ## 5) 로컬 개발
 
@@ -48,7 +50,7 @@ Vercel 대시보드에서 확인: **Settings → Environment Variables**의 `env
 
 ## 6) 배포·QA 플로우 (요약)
 
-1. `feature/*`에서 작업 → 필요 시 `preview`에 반영
+1. `feature/*`에서 작업 → push 시 **해당 브랜치 Preview URL**로 검증(또는 `preview` 브랜치로 모을 수 있음)
 2. Vercel Preview URL에서 스테이징 DB로 검증
 3. `main` 머지 후 Production 배포 및 운영 DB 기준 확인
 
