@@ -49,6 +49,11 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 - `service_role` 키는 클라이언트에 두지 않는다.
 - 브라우저에서 쓰는 값은 `NEXT_PUBLIC_` 접두사를 유지한다.
 
+운영/스테이징 분리:
+- 로컬 `.env.local`에는 기본적으로 **Preview용 Supabase**(`brand-pixel-world-preview`)를 넣는다.
+- Vercel **Production**에는 운영 프로젝트(`brand-pixel-world`), **Preview (`preview` 브랜치)**에는 스테이징 프로젝트를 넣는다.
+- 자세한 매핑은 [`docs/ENVIRONMENTS.md`](./ENVIRONMENTS.md)를 본다.
+
 ## 5) Supabase 연결 확인
 
 1. Supabase에서 프로젝트 URL/anon key 확인

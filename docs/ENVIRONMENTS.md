@@ -1,71 +1,58 @@
 # BPW Environments Guide
 
-이 문서는 BPW의 3개 환경(Local / Preview / Production) 운영 규칙을 정의한다.
+이 문서는 BPW의 환경(Local / Preview / Production)과 **브랜치·Supabase 분리** 규칙을 정의한다.
 
 ## 1) 환경 정의
 
 | 환경 | 용도 | 배포 트리거 | 도메인 |
 |------|------|-------------|--------|
 | Local | 개인 개발/디버깅 | 수동(`npm run dev`) | localhost |
-| Preview | PR/브랜치 검증 | 브랜치 push 또는 PR 생성 | Vercel Preview URL |
-| Production | 실서비스 | `main` 머지 후 자동 배포 | 연결된 실도메인 |
+| Preview | 스테이징 검증 | `preview` 브랜치 push | Vercel Preview URL |
+| Production | 실서비스 | `main` push/머지 | Vercel Production 도메인 |
 
-## 2) 브랜치 전략 (간단 권장안)
+## 2) 브랜치 전략
 
-- `main`: 항상 배포 가능한 상태 유지
-- 작업은 `feature/*` 브랜치에서 진행
-- PR 생성 시 Preview 배포 자동 생성
-- 검증 후 `main` 머지 -> Production 배포
+- `main` → **Production** 배포. 항상 배포 가능한 상태를 목표로 한다.
+- `preview` → **Preview(스테이징)** 배포 전용. 이름과 역할을 맞춰 혼동을 줄인다.
+- 기능 작업은 `feature/*`에서 하고, 검증 시 `preview`에 머지하거나 PR로 `preview`를 타겟으로 둔다.
+- `main` 반영은 검증 후 PR/머지로 진행한다.
 
-참고:
-- Railway에서 `dev/master` 2브랜치를 강하게 분리했던 방식과 달리,
-  Vercel에서는 **PR 단위 Preview URL**이 핵심이다.
-- 필요하면 `develop` 브랜치를 추가할 수 있지만, 초기에는 운영 복잡도만 늘 수 있다.
+## 3) Supabase 프로젝트 분리
 
-## 3) Vercel 환경변수 매핑
+| 용도 | Supabase 프로젝트 이름 | ref (식별용) |
+|------|------------------------|--------------|
+| Production | `brand-pixel-world` | `mgmotlgoipkrxytuiyqb` |
+| Preview / 로컬 스테이징 | `brand-pixel-world-preview` | `dvpirojhogdogvljexhz` |
 
-Vercel 프로젝트의 Environment별로 변수 값을 분리한다:
+- **Production**과 **Preview**는 DB가 다르다. Preview에서 넣은 데이터는 Production에 보이지 않는다.
+- 로컬 `.env.local`은 기본적으로 **Preview용(staging) Supabase**를 넣어 운영 DB를 건드리지 않는 것을 권장한다.
 
-- Local: `.env.local`
-- Preview: Vercel `Preview` 환경
-- Production: Vercel `Production` 환경
+## 4) Vercel 환경변수 매핑
 
-기본 변수:
+동일한 변수 이름을 쓰고, **환경·브랜치**만 나눈다.
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-규칙:
-- 환경마다 다른 Supabase 프로젝트를 사용할지(완전 분리), 하나를 공유할지(초기 단순화) 먼저 결정한다.
-- 민감 키는 `NEXT_PUBLIC_`로 노출하지 않는다.
+매핑:
 
-## 4) Supabase 환경 전략
+- **Production**: 운영 Supabase (`brand-pixel-world`)
+- **Preview (`preview` 브랜치)**: 스테이징 Supabase (`brand-pixel-world-preview`)
 
-초기 권장:
-- Production 1개, 개발용(Preview/Local 공용) 1개로 시작
-- 이후 필요 시 Preview 전용 프로젝트로 분리
+Vercel 대시보드에서 확인: **Settings → Environment Variables**의 `environments (git branch)` 열.
 
-장단점:
-- 2개 전략(개발/운영): 단순하고 빠름, 비용/관리 부담 적음
-- 3개 전략(Local/Preview/Prod 완전분리): 안전하지만 운영 복잡도 증가
+## 5) 로컬 개발
 
-## 5) 배포 플로우
+- `npm run dev` 전에 `.env.local`에 Preview Supabase URL/anon key를 둔다.
+- 운영 DB를 로컬에서 써야 할 때만 Production 키로 바꾼다 (주의).
 
-1. `feature/*` 브랜치에서 개발
-2. Git push
-3. Vercel Preview 생성
-4. Preview URL에서 동작 확인
-5. PR 머지
-6. Production 자동 배포
+## 6) 배포·QA 플로우 (요약)
 
-## 6) 로컬 개발 플로우
-
-- 기본적으로 로컬은 원하는 브랜치에서 `npm run dev`로 실행한다.
-- 보통 `feature/*`에서 개발하고, 필요하면 `main`으로 전환해 배포 기준 동작을 확인한다.
+1. `feature/*`에서 작업 → 필요 시 `preview`에 반영
+2. Vercel Preview URL에서 스테이징 DB로 검증
+3. `main` 머지 후 Production 배포 및 운영 DB 기준 확인
 
 ## 7) 운영 체크포인트
 
-- Preview에서 QA 체크리스트 수행 후 머지
-- DB 스키마 변경은 Production 반영 전 스테이징 검증 선행
-- 장애 시 최근 안정 커밋 기준으로 롤백 계획 확보
-
+- 스키마 변경은 **Preview Supabase**에 먼저 적용·검증 후 Production에 동일 마이그레이션 적용
+- 장애 시 최근 안정 커밋 기준 롤백 계획 유지
