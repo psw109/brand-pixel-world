@@ -32,7 +32,10 @@ export default function Home() {
         </ol>
       </section>
 
-      <div className="flex gap-3 text-sm">
+      <div className="flex flex-wrap gap-3 text-sm">
+        <Link className="underline" href="/village">
+          마을 맵 (Phaser)
+        </Link>
         <Link className="underline" href="/api/health">
           health 확인
         </Link>
