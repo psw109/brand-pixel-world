@@ -37,3 +37,20 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  notify:
+    name: Discord notify
+    needs: frontend
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (script only)
+        uses: actions/checkout@v4
+
+      - name: Notify Discord
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          WORKFLOW_CONCLUSION: ${{ needs.frontend.result }}
+          NOTIFY_TITLE: CI
+        run: bash scripts/github-discord-notify.sh

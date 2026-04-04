@@ -32,9 +32,19 @@ jobs:
           version: latest
 
       - name: Link & push (staging Supabase, dev branch)
+        id: migrate
         run: |
           supabase link --project-ref "$SUPABASE_PROJECT_ID"
           supabase db push
+
+      - name: Notify Discord
+        continue-on-error: true
+        if: always()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          WORKFLOW_CONCLUSION: ${{ steps.migrate.outcome }}
+          NOTIFY_TITLE: Supabase migrations (staging)
+        run: bash scripts/github-discord-notify.sh
 
   deploy-production:
     if: github.ref == 'refs/heads/main'
@@ -57,6 +67,16 @@ jobs:
           version: latest
 
       - name: Link & push (Production)
+        id: migrate
         run: |
           supabase link --project-ref "$SUPABASE_PROJECT_ID"
           supabase db push
+
+      - name: Notify Discord
+        continue-on-error: true
+        if: always()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          WORKFLOW_CONCLUSION: ${{ steps.migrate.outcome }}
+          NOTIFY_TITLE: Supabase migrations (production)
+        run: bash scripts/github-discord-notify.sh
