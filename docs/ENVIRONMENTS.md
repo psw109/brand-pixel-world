@@ -2,6 +2,8 @@
 
 BPW의 **Local / Vercel Preview / Production** 과 **Git 브랜치·Supabase·CI** 매핑을 한곳에 정의한다. (구 통합 브랜치 이름은 `preview`였고, 현재는 **`dev`**.)
 
+문서 역할: [`README.md`](./README.md) 색인 참고.
+
 ## 1) 용어 정리
 
 | 말하는 말 | 의미 |
@@ -26,7 +28,30 @@ BPW의 **Local / Vercel Preview / Production** 과 **Git 브랜치·Supabase·CI
 - **`feat/*`·`feature/*`** — 기능 브랜치. push 시 각각 **별도 Preview URL** (동일하게 스테이징 DB를 쓰도록 env를 두는 것이 일반적).
 - 권장 흐름: `feat/*` → (PR) **`dev`** 에서 통합 검증 → (PR) **`main`** 반영.
 
-원격에 예전 **`preview`** 브랜치만 있던 팀원은 `git fetch --prune` 후 **`dev`** 를 추적하면 된다. (`docs/SETUP.md` §7)
+원격에 예전 **`preview`** 브랜치만 있던 팀원은 `git fetch --prune` 후 **`dev`** 를 추적하면 된다.
+
+**`preview` → `dev` 이름만 바꿀 때:**
+
+```bash
+git fetch origin
+git checkout preview
+git branch -m dev
+git push -u origin dev
+git push origin --delete preview
+git checkout main
+```
+
+**`develop` → `dev`:**
+
+```bash
+git checkout develop
+git branch -m dev
+git push -u origin dev
+git push origin --delete develop
+git checkout main
+```
+
+새로 `dev`를 만들 때는 [`SETUP.md`](./SETUP.md) §4.
 
 ## 4) Supabase 프로젝트
 
@@ -59,7 +84,7 @@ BPW의 **Local / Vercel Preview / Production** 과 **Git 브랜치·Supabase·CI
 | **`ci.yml`** | `main`, `dev` | push·PR 시 lint·audit·타입·`next build` (Secrets 불필요) |
 | **`supabase-migrations.yml`** | `main`, `dev` (`supabase/migrations/**` 변경 시만 자동 실행) | **`dev` push** → 스테이징 Supabase에 `db push` / **`main` push** → 운영 Supabase에 `db push` (GitHub Environment **`Production`** + Required reviewers 시 승인 후 실행) |
 
-GitHub Secrets 이름은 **`SUPABASE_PREVIEW_*`** = 스테이징 프로젝트, **`SUPABASE_PRODUCTION_*`** = 운영 프로젝트 (Git 브랜치 이름과 무관). 상세·등록 방법은 `docs/SETUP.md` §8.
+GitHub Secrets 이름은 **`SUPABASE_PREVIEW_*`** = 스테이징 프로젝트, **`SUPABASE_PRODUCTION_*`** = 운영 프로젝트 (Git 브랜치 이름과 무관). 상세·등록 방법은 [`SETUP.md`](./SETUP.md) §5.
 
 ## 7) 로컬 개발
 

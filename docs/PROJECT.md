@@ -186,14 +186,16 @@
 
 ---
 
-## 7. 개발 시 참고할 디렉터리·문서 습관 (제안)
+## 7. 개발 시 참고할 문서 (제안)
 
 ```
 docs/
-  PROJECT.md          ← 이 파일 (전체 개요/제품 설계)
-  SETUP.md            ← 로컬 개발 시작/연결 절차
-  ENVIRONMENTS.md     ← Local/Preview/Production 운영 규칙
-  (추가) ADR/         ← 중요한 결정만 짧게 (선택)
+  README.md       ← 문서 색인
+  ONBOARDING.md   ← 클론 후 개발 시작 (팀원)
+  SETUP.md        ← 인프라·Secrets·Vercel·마이그레이션 (담당자)
+  ENVIRONMENTS.md ← Local / Preview / Production 매핑 (정본)
+  PROJECT.md      ← 이 파일 (제품·데이터·스택)
+  (선택) ADR/     ← 중요한 결정만 짧게
 ```
 
 - **큰 방향이 바뀌면** §2·§5·§6을 먼저 고친다. 부지·문의·footprint는 §2.1–2.2, §5.3–5.4를 본다.
@@ -216,7 +218,18 @@ docs/
 
 ---
 
-## 9. 오픈 이슈 (채우면서 지움)
+## 9. 구현 우선순위 (초안)
+
+인프라 연결은 [`SETUP.md`](./SETUP.md) / 팀원 실행은 [`ONBOARDING.md`](./ONBOARDING.md). 아래는 제품 구현 순서 제안이다.
+
+1. 월드(Phaser) 캔버스 + 오버레이(React) 기본 골격
+2. `lots` / `buildings` 데이터를 Supabase에서 읽기(anon SELECT 정책)
+3. 문의 폼 → API → Supabase `leads` 저장
+4. `dev`에서 QA 후 `main` 반영
+
+---
+
+## 10. 오픈 이슈 (채우면서 지움)
 
 체크리스트로 두고, 결정되면 문장으로 옮기거나 삭제한다.
 
