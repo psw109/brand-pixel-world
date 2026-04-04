@@ -57,7 +57,7 @@ BPW의 **Local / Vercel Preview / Production** 과 **Git 브랜치·Supabase·CI
 | 워크플로 | 브랜치 | 역할 |
 |----------|--------|------|
 | **`ci.yml`** | `main`, `dev` | push·PR 시 lint·audit·타입·`next build` (Secrets 불필요) |
-| **`supabase-migrations.yml`** | `main`, `dev` (`supabase/migrations/**` 등 경로 변경 시) | **`dev` push** → 스테이징 Supabase에 `db push` / **`main` push** → 운영 Supabase에 `db push` (GitHub Environment **`Production`** + Required reviewers 시 승인 후 실행) |
+| **`supabase-migrations.yml`** | `main`, `dev` (`supabase/migrations/**` 변경 시만 자동 실행) | **`dev` push** → 스테이징 Supabase에 `db push` / **`main` push** → 운영 Supabase에 `db push` (GitHub Environment **`Production`** + Required reviewers 시 승인 후 실행) |
 
 GitHub Secrets 이름은 **`SUPABASE_PREVIEW_*`** = 스테이징 프로젝트, **`SUPABASE_PRODUCTION_*`** = 운영 프로젝트 (Git 브랜치 이름과 무관). 상세·등록 방법은 `docs/SETUP.md` §8.
 
