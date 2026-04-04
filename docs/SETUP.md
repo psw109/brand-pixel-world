@@ -37,8 +37,8 @@
 아래 **§3은 하지 않는다.** (`create-next-app` 재실행 시 기존 코드와 충돌할 수 있다.)
 
 1. 루트에서 `npm install` 한 번 (의존성은 `package.json` / `package-lock.json`에 정의됨)
-2. `.env.example`을 참고해 `.env.local` 작성 (Preview용 Supabase URL·anon key는 팀에서 안전하게 공유)
-3. `npm run dev`로 로컬 실행
+2. **로컬 Supabase까지 한 번에**(Docker 필요): `npm run dev:start` — `scripts/dev_start.sh` 가 Docker 준비 → `supabase start` → `.env.local` 의 `NEXT_PUBLIC_SUPABASE_*` 를 로컬 인스턴스 값으로 갱신 → `next dev` 까지 이어 준다. (`python3` 없으면 env 갱신만 생략되며, 원격 스테이징만 쓰고 `.env.local` 을 덮어쓰기 싫으면 `SKIP_DEV_ENV_SYNC=1 npm run dev:start` 또는 아래 3번)
+3. **원격 스테이징만** 쓸 때: `.env.example` 을 참고해 `.env.local` 작성(Preview용 Supabase URL·anon key는 팀에서 안전하게 공유) 후 `npm run dev`
 4. DB 마이그레이션을 직접 원격에 반영하는 역할이면 **§5.4** 또는 **§8**부터 참고
 
 ## 3) 프로젝트 초기화
