@@ -44,6 +44,7 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           WORKFLOW_CONCLUSION: ${{ steps.migrate.outcome }}
           NOTIFY_TITLE: Supabase migrations (staging)
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: bash scripts/github-discord-notify.sh
 
   deploy-production:
@@ -79,4 +80,5 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           WORKFLOW_CONCLUSION: ${{ steps.migrate.outcome }}
           NOTIFY_TITLE: Supabase migrations (production)
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: bash scripts/github-discord-notify.sh

@@ -53,4 +53,5 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           WORKFLOW_CONCLUSION: ${{ needs.frontend.result }}
           NOTIFY_TITLE: CI
+          COMMIT_MESSAGE: ${{ github.event_name == 'pull_request' && github.event.pull_request.title || github.event.head_commit.message }}
         run: bash scripts/github-discord-notify.sh
