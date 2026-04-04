@@ -1,22 +1,22 @@
-# Preview 브랜치 → 스테이징 Supabase / main → Production Supabase
+# dev 브랜치 → 스테이징 Supabase(Secrets 이름은 SUPABASE_PREVIEW_* 유지) / main → Production
 # Production job은 GitHub Settings → Environments → Production 에서
 # Required reviewers 를 켜 두면 승인 후에만 db push 가 실행된다.
 name: Supabase migrations
 
 on:
   push:
-    branches: [main, preview]
+    branches: [main, dev]
     paths:
       - "supabase/migrations/**"
       - ".github/workflows/supabase-migrations.yml"
   workflow_dispatch:
 
 jobs:
-  deploy-preview:
-    if: github.ref == 'refs/heads/preview'
+  deploy-staging:
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     concurrency:
-      group: supabase-migrations-preview
+      group: supabase-migrations-dev
       cancel-in-progress: false
 
     env:
@@ -31,7 +31,7 @@ jobs:
         with:
           version: latest
 
-      - name: Link & push (Preview / staging)
+      - name: Link & push (staging Supabase, dev branch)
         run: |
           supabase link --project-ref "$SUPABASE_PROJECT_ID"
           supabase db push

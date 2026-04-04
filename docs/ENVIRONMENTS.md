@@ -7,14 +7,14 @@
 | 환경 | 용도 | 배포 트리거 | 도메인 |
 |------|------|-------------|--------|
 | Local | 개인 개발/디버깅 | 수동(`npm run dev`) | localhost |
-| Preview | 스테이징 검증 | `preview`·`feat/*` 등 **main이 아닌 브랜치** push/PR | 브랜치별 Vercel Preview URL |
+| Preview | 스테이징 검증 | `dev`·`feat/*` 등 **main이 아닌 브랜치** push/PR | 브랜치별 Vercel Preview URL |
 | Production | 실서비스 | `main` push/머지 | Vercel Production 도메인 |
 
 ## 2) 브랜치 전략
 
 - `main` → **Production** 배포. 항상 배포 가능한 상태를 목표로 한다.
-- `preview` → **Preview(스테이징)** 배포 전용. 이름과 역할을 맞춰 혼동을 줄인다.
-- 기능 작업은 `feature/*`에서 하고, 검증 시 `preview`에 머지하거나 PR로 `preview`를 타겟으로 둔다.
+- `dev` → 팀 **스테이징 통합** 브랜치. Vercel에서는 `main`이 아닌 브랜치이므로 **Preview 배포**로 뜬다(배포 환경 이름 `Preview`와 별개).
+- 기능 작업은 `feature/*`에서 하고, 검증 시 `dev`에 머지하거나 PR로 `dev`를 타겟으로 둔다.
 - `main` 반영은 검증 후 PR/머지로 진행한다.
 
 ## 3) Supabase 프로젝트 분리
@@ -50,7 +50,7 @@ Vercel 대시보드에서 확인: **Settings → Environment Variables**의 `env
 
 ## 6) 배포·QA 플로우 (요약)
 
-1. `feature/*`에서 작업 → push 시 **해당 브랜치 Preview URL**로 검증(또는 `preview` 브랜치로 모을 수 있음)
+1. `feature/*`에서 작업 → push 시 **해당 브랜치 Preview URL**로 검증(또는 `dev` 브랜치로 모을 수 있음)
 2. Vercel Preview URL에서 스테이징 DB로 검증
 3. `main` 머지 후 Production 배포 및 운영 DB 기준 확인
 

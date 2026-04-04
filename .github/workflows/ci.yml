@@ -3,9 +3,9 @@ name: CI
 
 on:
   push:
-    branches: [main, preview]
+    branches: [main, dev]
   pull_request:
-    branches: [main, preview]
+    branches: [main, dev]
 
 jobs:
   frontend:
