@@ -31,7 +31,18 @@
 - Vercel 계정
 - Supabase 계정
 
+### 이미 레포를 클론하거나 `pull`만 하는 팀원
+
+아래 **§3은 하지 않는다.** (`create-next-app` 재실행 시 기존 코드와 충돌할 수 있다.)
+
+1. 루트에서 `npm install` 한 번 (의존성은 `package.json` / `package-lock.json`에 정의됨)
+2. `.env.example`을 참고해 `.env.local` 작성 (Preview용 Supabase URL·anon key는 팀에서 안전하게 공유)
+3. `npm run dev`로 로컬 실행
+4. DB 마이그레이션을 직접 원격에 반영하는 역할이면 **§5.4**부터 참고
+
 ## 3) 프로젝트 초기화
+
+**빈 디렉터리에서 레포를 처음 만들 때만** 해당한다. (위 “클론·pull 팀원”은 이 절 전체를 건너뛴다.)
 
 레포 루트에서 실행:
 
@@ -188,13 +199,11 @@ Vercel -> Project -> `Settings` -> `Environment Variables`에서 추가:
 
 - `NEXT_PUBLIC_SUPABASE_URL` = 스테이징 Supabase URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = 스테이징 anon key
-- Environment: `Preview`
-- **Git Branch: 비움(All Preview branches / 브랜치 미지정)**  
-  → `feat/foo`, `preview` 등 **Preview로 배포되는 모든 브랜치**에 동일 값이 주입된다.
+- 변수 추가·편집 화면의 **Environments**에서 **`Preview`만 체크**, `Production` / `Development`는 필요 시에만 체크
 
-대시보드에서 변수 추가 시 “특정 브랜치만”이 아니라 **Preview 전체**로 저장했는지 확인한다.
+이렇게 저장하면 **Git 브랜치 이름과 무관하게** `main`이 아닌 브랜치로 생성되는 **모든 Preview 배포**에 동일 값이 들어간다. 목록에는 보통 `Environment`만 `Preview`로 보이는 것이 정상이다.
 
-참고: Vercel CLI가 에이전트/비대화형 환경에서 브랜치 선택을 강제할 때는, 대시보드에서 추가하거나 REST API로 `target: ["preview"]`만 지정하고 `gitBranch`를 생략하는 방식이 동작한다.
+**주의:** “특정 Git 브랜치에만 적용” 옵션을 켠 경우에만 `feat/*` Preview에 env가 빠질 수 있다. 기본은 위와 같이 **Preview 환경만** 지정하면 된다.
 
 ## 10) 동작 확인 체크리스트
 
@@ -217,8 +226,8 @@ npm run dev
 
 Vercel `npx vercel env ls` 또는 대시보드에서:
 
-- Production 값 2개 존재
-- Preview 값 2개 존재(브랜치 열이 비어 있거나 “All previews”로 표시되면 전체 Preview에 적용된 상태)
+- `Production`용 `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` 각 1개
+- `Preview`용 동일 이름 2개(스테이징 Supabase 값)
 
 ### 10.4 Supabase 테이블
 
