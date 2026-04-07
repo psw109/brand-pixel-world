@@ -1,11 +1,19 @@
 #!/usr/bin/env bash
-# 한 번에: Docker 확인 → 로컬 Supabase 기동 → .env.local 갱신 → next dev
+# 한 번에: npm install → Docker 확인 → 로컬 Supabase 기동 → .env.local 갱신 → next dev
 # 스테이징만 쓰고 .env.local 을 건드리지 않으려면: SKIP_DEV_ENV_SYNC=1 npm run dev:start
+# 이미 node_modules 를 맞춰 뒀고 install 을 건너뛰려면: SKIP_NPM_INSTALL=1 npm run dev:start
 set -euo pipefail
 
 # 레포 루트 (이 스크립트는 scripts/ 아래에 있으므로 한 단계 위)
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+
+if [[ "${SKIP_NPM_INSTALL:-}" == "1" ]]; then
+  echo "==> SKIP_NPM_INSTALL=1 — npm install 건너뜀"
+else
+  echo "==> npm install (의존성 동기화)"
+  npm install
+fi
 
 # Docker 데몬이 떠서 컨테이너를 돌릴 수 있는지 여부만 확인 (출력은 숨김)
 docker_daemon_ready() {
