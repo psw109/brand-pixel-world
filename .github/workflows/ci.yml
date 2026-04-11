@@ -60,5 +60,7 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           WORKFLOW_CONCLUSION: ${{ needs.frontend.result }}
           NOTIFY_TITLE: CI
+          # PR이면 병합 대상 브랜치(dev/main), push면 현재 브랜치
+          NOTIFY_BRANCH: ${{ github.event_name == 'pull_request' && github.base_ref || github.ref_name }}
           COMMIT_MESSAGE: ${{ github.event_name == 'pull_request' && github.event.pull_request.title || github.event.head_commit.message }}
         run: bash scripts/github-discord-notify.sh
