@@ -1,11 +1,18 @@
 # Next 앱 품질 검증 (루트 단일 패키지). Vercel 빌드와 별개로 PR/푸시에서 빠르게 피드백.
+# DB 스키마 적용은 `supabase-migrations.yml`과 분리한다. 마이그레이션·시드만 바뀐 커밋은 CI를 생략한다.
 name: CI
 
 on:
   push:
     branches: [main, dev]
+    paths-ignore:
+      - "supabase/migrations/**"
+      - "supabase/seed.sql"
   pull_request:
     branches: [main, dev]
+    paths-ignore:
+      - "supabase/migrations/**"
+      - "supabase/seed.sql"
 
 jobs:
   frontend:

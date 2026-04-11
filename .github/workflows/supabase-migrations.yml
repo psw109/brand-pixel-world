@@ -1,3 +1,4 @@
+# DB 마이그레이션 전용 워크플로. Next 린트·빌드는 `ci.yml`과 별도로 둔다.
 # dev 브랜치 → 스테이징 Supabase(Secrets 이름은 SUPABASE_PREVIEW_* 유지) / main → Production
 # Production job은 GitHub Settings → Environments → Production 에서
 # Required reviewers 를 켜 두면 승인 후에만 db push 가 실행된다.

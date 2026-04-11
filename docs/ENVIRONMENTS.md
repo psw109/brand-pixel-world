@@ -79,12 +79,16 @@ git checkout main
 
 ## 6) GitHub Actions (현재 레포)
 
+**원칙:** **CI**와 **Supabase 마이그레이션**은 **서로 다른 워크플로 파일**로 둔다. 앱 품질 검증과 `supabase db push`를 섞지 않는다.
+
 | 워크플로 | 브랜치 | 역할 |
 |----------|--------|------|
-| **`ci.yml`** | `main`, `dev` | push·PR 시 lint·audit·타입·`next build` (Secrets 불필요) |
+| **`ci.yml`** | `main`, `dev` | push·PR 시 lint·audit·타입·`next build` (Secrets 불필요). **`supabase/migrations/**`·`supabase/seed.sql`만 바뀐 커밋/PR은 `paths-ignore`로 이 워크플로를 생략**한다. |
 | **`supabase-migrations.yml`** | `main`, `dev` (`supabase/migrations/**` 변경 시만 자동 실행) | **`dev` push** → 스테이징 Supabase에 `db push` / **`main` push** → 운영 Supabase에 `db push` (GitHub Environment **`Production`** + Required reviewers 시 승인 후 실행) |
 
 GitHub Secrets 이름은 **`SUPABASE_PREVIEW_*`** = 스테이징 프로젝트, **`SUPABASE_PRODUCTION_*`** = 운영 프로젝트 (Git 브랜치 이름과 무관). 상세·등록 방법은 [`SETUP.md`](./SETUP.md) §5.
+
+**커밋 메시지:** 팀 관례상 **한국어**로 작성한다 (요약 한 줄 + 필요 시 본문). Cursor 로컬 규칙(`.cursor/rules/`, 레포에선 gitignore될 수 있음)과 맞춘다.
 
 ## 7) 로컬 개발
 
