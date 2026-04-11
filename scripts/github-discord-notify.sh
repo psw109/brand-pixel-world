@@ -10,9 +10,6 @@ fi
 
 TITLE="${NOTIFY_TITLE:-Workflow}"
 CONCLUSION="${WORKFLOW_CONCLUSION:-unknown}"
-# CI 제목: "CI DEV - success" 형태 (브랜치는 NOTIFY_BRANCH 우선, 없으면 GITHUB_REF_NAME)
-BRANCH_LABEL="${NOTIFY_BRANCH:-${GITHUB_REF_NAME:-unknown}}"
-BR_UPPER=$(echo "$BRANCH_LABEL" | tr '[:lower:]' '[:upper:]')
 SHA="${GITHUB_SHA:-}"
 SHORT_SHA="${SHA:0:7}"
 RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
@@ -34,11 +31,7 @@ case "$CONCLUSION" in
   *) COLOR=15158332 ;;
 esac
 
-if [ "$TITLE" = "CI" ]; then
-  EMBED_TITLE="CI ${BR_UPPER} - ${CONCLUSION}"
-else
-  EMBED_TITLE="$TITLE — $CONCLUSION"
-fi
+EMBED_TITLE="$TITLE — $CONCLUSION"
 
 # 실제 줄바꿈으로 본문 구성 (Discord description에서 개행으로 표시됨)
 DESC=$(printf '%s\n' \
