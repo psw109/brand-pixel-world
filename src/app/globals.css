@@ -24,3 +24,8 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Phaser 맵 패닝 시 브라우저 제스처와 충돌 완화 (PhaserTest index.html 가이드와 동일 취지) */
+.bpw-game-host {
+  touch-action: none;
+}
