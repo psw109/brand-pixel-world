@@ -27,6 +27,7 @@ COMMIT_SAFE=${COMMIT_SAFE//\`/}
 COLOR=15158332
 case "$CONCLUSION" in
   success) COLOR=3066993 ;;
+  info) COLOR=3447003 ;; # 승인 안내 등
   *) COLOR=15158332 ;;
 esac
 
@@ -38,6 +39,13 @@ DESC=$(printf '%s\n' \
   "**Branch:** \`${GITHUB_REF_NAME}\`" \
   "**Commit:** [\`${SHORT_SHA}\`](${COMMIT_URL})" \
   "**Message:** ${COMMIT_SAFE}")
+
+# main + Production 환경 승인 전: 같은 워크플로 실행 페이지로 보내 GitHub에서 Review deployments
+if [ "${SHOW_PRODUCTION_APPROVAL_LINK:-}" = "1" ]; then
+  DESC=$(printf '%s\n' "$DESC" "" \
+    "**운영(Production) DB 마이그레이션**은 GitHub Environment 승인 후에만 진행됩니다." \
+    "**[→ 이 실행에서 승인·검토 (Actions)](${RUN_URL})** — 페이지에서 **Review deployments** / **Approve and deploy** 를 누르면 됩니다.")
+fi
 
 PAYLOAD=$(
   jq -n \

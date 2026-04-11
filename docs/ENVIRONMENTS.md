@@ -88,6 +88,8 @@ git checkout main
 
 GitHub Secrets 이름은 **`SUPABASE_PREVIEW_*`** = 스테이징 프로젝트, **`SUPABASE_PRODUCTION_*`** = 운영 프로젝트 (Git 브랜치 이름과 무관). 상세·등록 방법은 [`SETUP.md`](./SETUP.md) §5.
 
+**Production 승인 + Discord:** GitHub은 승인 UI로 바로 가는 **공개 딥링크**를 제공하지 않는다. `supabase-migrations.yml`의 **`discord-production-approval-hint`** job이 **같은 워크플로 실행 URL**(`…/actions/runs/<run_id>`)을 Discord에 보내고, 그 페이지에서 **Review deployments** / **Approve and deploy** 로 진입하면 된다.
+
 **커밋 메시지:** 팀 관례상 **한국어**로 작성한다 (요약 한 줄 + 필요 시 본문). Cursor 로컬 규칙(`.cursor/rules/`, 레포에선 gitignore될 수 있음)과 맞춘다.
 
 ## 7) 로컬 개발
