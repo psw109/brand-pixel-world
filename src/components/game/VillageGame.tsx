@@ -15,15 +15,25 @@ export default function VillageGame() {
 
     let cancelled = false;
 
-    void import("@/game/config").then(({ createGame }) => {
+    void (async () => {
+      const [{ createGame }, { loadWorldMapBundle }] = await Promise.all([
+        import("@/game/config"),
+        import("@/lib/map/loadWorldMap"),
+      ]);
       if (cancelled || !hostRef.current) return;
-      const game = createGame(hostRef.current);
-      if (cancelled) {
-        game.destroy(true);
-        return;
+      try {
+        const bundle = await loadWorldMapBundle("main");
+        if (cancelled || !hostRef.current) return;
+        const game = createGame(hostRef.current, bundle);
+        if (cancelled) {
+          game.destroy(true);
+          return;
+        }
+        gameRef.current = game;
+      } catch (e) {
+        console.error("[VillageGame] 맵 로드 실패", e);
       }
-      gameRef.current = game;
-    });
+    })();
 
     return () => {
       cancelled = true;

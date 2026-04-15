@@ -1,4 +1,4 @@
--- 로컬 `db reset` 직후 실행. 마이그레이션 `20260411190000_main_village_layout`과 동일 레이아웃 유지.
+-- 메인 맵 36×20 및 부지 6곳 (로컬 seed와 동일 레이아웃, 원격 db push용)
 
 INSERT INTO public.tile_type (tile_key, label, category, sprite_path, walkable, meta)
 VALUES ('grass', '잔디', 'ground', NULL, true, '{}'::jsonb)

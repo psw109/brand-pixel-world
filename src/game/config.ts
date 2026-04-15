@@ -1,8 +1,11 @@
 import * as Phaser from "phaser";
-import { WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
-import { WorldScene } from "./scenes/WorldScene";
+import type { WorldMapBundle } from "@/lib/map/worldMapTypes";
+import { WORLD_BUNDLE_REGISTRY_KEY, WorldScene } from "./scenes/WorldScene";
 
-export function createGame(parent: HTMLElement): Phaser.Game {
+export function createGame(
+  parent: HTMLElement,
+  worldBundle: WorldMapBundle,
+): Phaser.Game {
   const w =
     typeof window !== "undefined" ? Math.min(window.innerWidth, 960) : 960;
   const h =
@@ -25,11 +28,12 @@ export function createGame(parent: HTMLElement): Phaser.Game {
     scene: [WorldScene],
     banner: false,
     callbacks: {
+      preBoot: (game) => {
+        game.registry.set(WORLD_BUNDLE_REGISTRY_KEY, worldBundle);
+      },
       postBoot: (game) => {
         game.scale.refresh();
       },
     },
   });
 }
-
-export { WORLD_WIDTH, WORLD_HEIGHT };

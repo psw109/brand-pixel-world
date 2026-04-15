@@ -1,9 +1,15 @@
 import type Phaser from "phaser";
-import { CAMERA_ZOOM, WORLD_HEIGHT, WORLD_WIDTH } from "../constants";
+import type { WorldMapBundle } from "@/lib/map/worldMapTypes";
+import { CAMERA_ZOOM } from "../constants";
 
-export function setupWorldCamera(camera: Phaser.Cameras.Scene2D.Camera): void {
-  camera.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+export function setupWorldCamera(
+  camera: Phaser.Cameras.Scene2D.Camera,
+  bundle: WorldMapBundle,
+): void {
+  const w = bundle.map.widthTiles * bundle.map.tileWidthPx;
+  const h = bundle.map.heightTiles * bundle.map.tileHeightPx;
+  camera.setBounds(0, 0, w, h);
   camera.setZoom(CAMERA_ZOOM);
-  camera.centerOn(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+  camera.centerOn(w / 2, h / 2);
   camera.roundPixels = false;
 }

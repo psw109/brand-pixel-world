@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 한 번에: npm install → Docker 확인 → 로컬 Supabase 기동 → .env.local 갱신 → next dev
+# 한 번에: npm install → Docker 확인 → 로컬 Supabase 기동 → migration up → .env.local 갱신 → next dev
 # 스테이징만 쓰고 .env.local 을 건드리지 않으려면: SKIP_DEV_ENV_SYNC=1 npm run dev:start
 # 이미 node_modules 를 맞춰 뒀고 install 을 건너뛰려면: SKIP_NPM_INSTALL=1 npm run dev:start
 set -euo pipefail
@@ -135,9 +135,13 @@ print('==> .env.local 갱신 (로컬 Supabase URL · Publishable/anon 키)', fil
 
 ensure_docker
 
-# 로컬 Postgres·Studio 등 컨테이너 기동 + migrations 적용 (npm 스크립트: supabase start)
+# 로컬 Postgres·Studio 등 컨테이너 기동 (npm 스크립트: supabase start)
 echo "==> Supabase 로컬 스택 시작 (Docker 필요)"
 npm run db:start
+
+# pull 후 이미 컨테이너가 떠 있는 상황까지 포함해, 로컬 미적용 migration 을 항상 반영
+echo "==> Supabase 로컬 마이그레이션 적용 (migration up --local)"
+npx supabase migration up --local --yes
 
 # Next 가 읽을 .env.local 을 로컬 인스턴스 기준으로 갱신
 sync_env_local
