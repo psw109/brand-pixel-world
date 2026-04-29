@@ -25,9 +25,9 @@ export type WorldMapBundle = {
     heightTiles: number;
     defaultGroundTileKey: string;
     defaultGroundSpritePath: string | null;
-    /** 월드 가로 픽셀 ÷ 가로 타일 수 */
+    /** DB `map.tile_px` — 정사각 타일 한 변(px), NOT NULL */
+    tilePx: number;
     tileWidthPx: number;
-    /** 월드 세로 픽셀 ÷ 세로 타일 수 */
     tileHeightPx: number;
   };
   /** 희소 바닥 덮어쓰기 (없는 칸은 기본 바닥 스프라이트) */

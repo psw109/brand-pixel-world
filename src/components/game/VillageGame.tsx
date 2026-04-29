@@ -2,7 +2,11 @@
 
 import { useEffect, useRef } from "react";
 
-/** Phaser는 클라이언트에서만 로드 (Next SSR 번들에 포함되지 않게). */
+/**
+ * 1) Supabase에서 맵 번들 로드
+ * 2) `createGame` → preBoot에 번들 등록 → preload에서 에셋 로드 → create에서 렌더·카메라
+ * Phaser는 동적 import로 클라이언트 전용 유지.
+ */
 export default function VillageGame() {
   const hostRef = useRef<HTMLDivElement>(null);
   const gameRef = useRef<{ destroy: (removeCanvas: boolean) => void } | null>(

@@ -6,20 +6,20 @@ BPW의 **Local / Vercel Preview / Production** 과 **Git 브랜치·Supabase·CI
 
 ## 1) 용어 정리
 
-| 말하는 말 | 의미 |
-|-----------|------|
-| **Git `dev`** | 원격 저장소의 스테이징 통합 브랜치 |
-| **Vercel `Preview`** | 대시보드에서 쓰는 배포 환경 이름. `main`이 아닌 브랜치 배포가 여기에 해당 |
+| 말하는 말             | 의미                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Git `dev`**         | 원격 저장소의 스테이징 통합 브랜치                                                                     |
+| **Vercel `Preview`**  | 대시보드에서 쓰는 배포 환경 이름. `main`이 아닌 브랜치 배포가 여기에 해당                              |
 | **스테이징 Supabase** | 프로젝트 `brand-pixel-world-preview` (호스트 URL에 `preview`가 들어가도 **Git 브랜치 `dev`와는 별개**) |
-| **운영 Supabase** | 프로젝트 `brand-pixel-world` |
+| **운영 Supabase**     | 프로젝트 `brand-pixel-world`                                                                           |
 
 ## 2) 환경 정의
 
-| 환경 | 용도 | 트리거·접속 | DB·백엔드 |
-|------|------|-------------|-----------|
-| **Local** | 개인 개발 | `npm run dev` 또는 `npm run dev:start` | 로컬 Docker Supabase(`supabase start`) 또는 `.env.local`로 **스테이징 Supabase** |
-| **Vercel Preview** | PR·브랜치별 검증 | `dev`·`feat/*` 등 **non-`main`** push → 브랜치별 Preview URL | Vercel **Preview** env 변수 → **스테이징 Supabase** (브랜치 미지정 설정 시 전 브랜치 공통) |
-| **Vercel Production** | 실서비스 | `main` push/머지 | Vercel **Production** env → **운영 Supabase** |
+| 환경                  | 용도             | 트리거·접속                                                  | DB·백엔드                                                                                  |
+| --------------------- | ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| **Local**             | 개인 개발        | `npm run dev` 또는 `npm run dev:start`                       | 로컬 Docker Supabase(`supabase start`) 또는 `.env.local`로 **스테이징 Supabase**           |
+| **Vercel Preview**    | PR·브랜치별 검증 | `dev`·`feat/*` 등 **non-`main`** push → 브랜치별 Preview URL | Vercel **Preview** env 변수 → **스테이징 Supabase** (브랜치 미지정 설정 시 전 브랜치 공통) |
+| **Vercel Production** | 실서비스         | `main` push/머지                                             | Vercel **Production** env → **운영 Supabase**                                              |
 
 ## 3) Git 브랜치 전략
 
@@ -27,19 +27,6 @@ BPW의 **Local / Vercel Preview / Production** 과 **Git 브랜치·Supabase·CI
 - **`dev`** — 팀 스테이징 통합. Vercel에서는 **Preview 배포**로 올라간다 (`main`이 아니므로).
 - **`feat/*`·`feature/*`** — 기능 브랜치. push 시 각각 **별도 Preview URL** (동일하게 스테이징 DB를 쓰도록 env를 두는 것이 일반적).
 - 권장 흐름: `feat/*` → (PR) **`dev`** 에서 통합 검증 → (PR) **`main`** 반영.
-
-원격에 예전 **`preview`** 브랜치만 있던 팀원은 `git fetch --prune` 후 **`dev`** 를 추적하면 된다.
-
-**`preview` → `dev` 이름만 바꿀 때:**
-
-```bash
-git fetch origin
-git checkout preview
-git branch -m dev
-git push -u origin dev
-git push origin --delete preview
-git checkout main
-```
 
 **`develop` → `dev`:**
 
@@ -55,9 +42,9 @@ git checkout main
 
 ## 4) Supabase 프로젝트
 
-| 용도 | 프로젝트 이름 | ref (식별) |
-|------|----------------|------------|
-| 운영 | `brand-pixel-world` | `mgmotlgoipkrxytuiyqb` |
+| 용도     | 프로젝트 이름               | ref (식별)             |
+| -------- | --------------------------- | ---------------------- |
+| 운영     | `brand-pixel-world`         | `mgmotlgoipkrxytuiyqb` |
 | 스테이징 | `brand-pixel-world-preview` | `dvpirojhogdogvljexhz` |
 
 - 운영과 스테이징 DB는 완전히 분리된다.
@@ -70,10 +57,10 @@ git checkout main
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-| Vercel 환경 | 값 |
-|-------------|-----|
-| **Production** | 운영 Supabase (`brand-pixel-world`) |
-| **Preview** | 스테이징 Supabase (`brand-pixel-world-preview`) — **특정 Git 브랜치에만 묶지 않으면** `dev`·`feat/*` Preview 배포가 모두 이 값을 쓴다 |
+| Vercel 환경    | 값                                                                                                                                    |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Production** | 운영 Supabase (`brand-pixel-world`)                                                                                                   |
+| **Preview**    | 스테이징 Supabase (`brand-pixel-world-preview`) — **특정 Git 브랜치에만 묶지 않으면** `dev`·`feat/*` Preview 배포가 모두 이 값을 쓴다 |
 
 대시보드: **Settings → Environment Variables** 에서 `environments (git branch)` 열이 비어 있으면 “전체 Preview”에 적용된 것이 정상이다.
 
@@ -81,9 +68,9 @@ git checkout main
 
 **원칙:** **CI**와 **Supabase 마이그레이션**은 **서로 다른 워크플로 파일**로 둔다. 앱 품질 검증과 `supabase db push`를 섞지 않는다.
 
-| 워크플로 | 브랜치 | 역할 |
-|----------|--------|------|
-| **`ci.yml`** | `main`, `dev` | push·PR 시 lint·audit·타입·`next build` (Secrets 불필요). **`supabase/migrations/**`·`supabase/seed.sql`만 바뀐 커밋/PR은 `paths-ignore`로 이 워크플로를 생략**한다. |
+| 워크플로                      | 브랜치                                                       | 역할                                                                                                                                                                    |
+| ----------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`ci.yml`**                  | `main`, `dev`                                                | push·PR 시 lint·audit·타입·`next build` (Secrets 불필요). **`supabase/migrations/**`·`supabase/seed.sql`만 바뀐 커밋/PR은 `paths-ignore`로 이 워크플로를 생략**한다. |
 | **`supabase-migrations.yml`** | `main`, `dev` (`supabase/migrations/**` 변경 시만 자동 실행) | **`dev` push** → 스테이징 Supabase에 `db push` / **`main` push** → 운영 Supabase에 `db push` (GitHub Environment **`Production`** + Required reviewers 시 승인 후 실행) |
 
 GitHub Secrets 이름은 **`SUPABASE_PREVIEW_*`** = 스테이징 프로젝트, **`SUPABASE_PRODUCTION_*`** = 운영 프로젝트 (Git 브랜치 이름과 무관). 상세·등록 방법은 [`SETUP.md`](./SETUP.md) §5.
@@ -94,11 +81,11 @@ GitHub Secrets 이름은 **`SUPABASE_PREVIEW_*`** = 스테이징 프로젝트, *
 
 ## 7) 로컬 개발
 
-| 방식 | 설명 |
-|------|------|
-| **`npm run dev:start`** | Docker → `supabase start` → (선택) `.env.local`의 `NEXT_PUBLIC_SUPABASE_*` 를 **로컬** 인스턴스로 갱신 → `next dev`. `scripts/dev_start.sh` |
-| **`npm run dev`** | `.env.local`을 직접 맞춤. 원격 스테이징만 쓸 때는 스테이징 URL·키 |
-| **`SKIP_DEV_ENV_SYNC=1 npm run dev:start`** | 로컬 컨테이너는 띄우되 `.env.local` 은 덮어쓰지 않음 |
+| 방식                                        | 설명                                                                                                                                        |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`npm run dev:start`**                     | Docker → `supabase start` → (선택) `.env.local`의 `NEXT_PUBLIC_SUPABASE_*` 를 **로컬** 인스턴스로 갱신 → `next dev`. `scripts/dev_start.sh` |
+| **`npm run dev`**                           | `.env.local`을 직접 맞춤. 원격 스테이징만 쓸 때는 스테이징 URL·키                                                                           |
+| **`SKIP_DEV_ENV_SYNC=1 npm run dev:start`** | 로컬 컨테이너는 띄우되 `.env.local` 은 덮어쓰지 않음                                                                                        |
 
 운영 Supabase 키는 로컬에 두지 않는 것을 권장한다.
 

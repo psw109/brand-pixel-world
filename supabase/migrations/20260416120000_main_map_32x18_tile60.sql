@@ -1,47 +1,18 @@
--- 로컬 `db reset` 직후 실행. 마이그레이션과 동일 레이아웃 유지 (main: 32×18, tile_px 60).
+-- main 맵: 1920×1080에 정사각 타일 60px → 32×18 격자
+-- 부지·건물은 새 격자 안에 맞게 재배치 (기존 UUID 유지)
 
-INSERT INTO public.tile_type (tile_key, label, category, sprite_path, walkable, meta)
-VALUES ('grass', '잔디', 'ground', NULL, true, '{}'::jsonb)
-ON CONFLICT (tile_key) DO NOTHING;
+UPDATE public.map
+SET
+  width_tiles = 32,
+  height_tiles = 18,
+  tile_px = 60
+WHERE slug = 'main';
 
-INSERT INTO public.lot_type (id, key, name, sprite_path, meta)
-VALUES (
-  'b0000000-0000-4000-8000-000000000001'::uuid,
-  'parcel',
-  '기본 부지',
-  '/assets/lot.jpg',
-  NULL
-)
-ON CONFLICT (key) DO UPDATE SET
-  name = EXCLUDED.name,
-  sprite_path = EXCLUDED.sprite_path;
-
-INSERT INTO public.map (
-  id,
-  slug,
-  name,
-  width_tiles,
-  height_tiles,
-  default_ground_tile_key,
-  tile_px
-)
-VALUES (
-  'a0000000-0000-4000-8000-000000000001'::uuid,
-  'main',
-  '메인 맵',
-  32,
-  18,
-  'grass',
-  60
-)
-ON CONFLICT (slug) DO UPDATE SET
-  width_tiles = EXCLUDED.width_tiles,
-  height_tiles = EXCLUDED.height_tiles,
-  default_ground_tile_key = EXCLUDED.default_ground_tile_key,
-  tile_px = EXCLUDED.tile_px;
+DELETE FROM public.map_building
+WHERE map_id = (SELECT id FROM public.map WHERE slug = 'main' LIMIT 1);
 
 DELETE FROM public.map_lot
-WHERE map_id = (SELECT id FROM public.map WHERE slug = 'main');
+WHERE map_id = (SELECT id FROM public.map WHERE slug = 'main' LIMIT 1);
 
 INSERT INTO public.map_lot (id, map_id, lot_type_id, area, lot_phase)
 VALUES
@@ -57,9 +28,6 @@ VALUES
    '{"tile_x":11,"tile_y":9,"width_tiles":6,"height_tiles":5}'::jsonb, 'vacant'),
   ('c0000006-0000-4000-8000-000000000001'::uuid, 'a0000000-0000-4000-8000-000000000001'::uuid, 'b0000000-0000-4000-8000-000000000001'::uuid,
    '{"tile_x":19,"tile_y":9,"width_tiles":7,"height_tiles":5}'::jsonb, 'vacant');
-
-DELETE FROM public.map_building
-WHERE map_id = (SELECT id FROM public.map WHERE slug = 'main');
 
 INSERT INTO public.map_building (id, map_id, lot_id, label, area, sprite_path)
 VALUES (

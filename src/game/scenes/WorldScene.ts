@@ -16,16 +16,13 @@ export const WORLD_BUNDLE_REGISTRY_KEY = "worldBundle";
 
 export class WorldScene extends Phaser.Scene {
   private mapInput: WorldMapInputHandle | null = null;
+  private worldBundle: WorldMapBundle | null = null;
 
   constructor() {
     super({ key: "WorldScene" });
   }
 
-  preload(): void {
-    loadMapAssets(this);
-  }
-
-  create(): void {
+  private requireWorldBundle(): WorldMapBundle {
     const bundle = this.registry.get(
       WORLD_BUNDLE_REGISTRY_KEY,
     ) as WorldMapBundle | undefined;
@@ -34,12 +31,30 @@ export class WorldScene extends Phaser.Scene {
         `[WorldScene] registry에 ${WORLD_BUNDLE_REGISTRY_KEY} 가 없습니다.`,
       );
     }
+    return bundle;
+  }
 
+  private syncWorldCamera(): void {
+    if (!this.worldBundle) return;
+    setupWorldCamera(this.cameras.main, this.worldBundle);
+  }
+
+  preload(): void {
+    loadMapAssets(this, this.requireWorldBundle());
+  }
+
+  create(): void {
+    const bundle = this.requireWorldBundle();
+    this.worldBundle = bundle;
+
+    this.scale.refresh();
     renderWorldMap(this, bundle);
+    this.syncWorldCamera();
+
+    this.scale.on("resize", this.syncWorldCamera, this);
+    this.time.delayedCall(0, () => this.syncWorldCamera());
 
     const cam = this.cameras.main;
-    setupWorldCamera(cam, bundle);
-
     const g = { tileW: bundle.map.tileWidthPx, tileH: bundle.map.tileHeightPx };
     const lots = bundleToPlacedLots(bundle);
     const buildings = bundleToPlacedBuildings(bundle);
@@ -50,6 +65,8 @@ export class WorldScene extends Phaser.Scene {
     });
 
     this.sys.events.once("shutdown", () => {
+      this.scale.off("resize", this.syncWorldCamera, this);
+      this.worldBundle = null;
       this.mapInput?.destroy();
       this.mapInput = null;
     });

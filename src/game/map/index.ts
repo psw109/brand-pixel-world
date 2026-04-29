@@ -1,11 +1,5 @@
 export { loadMapAssets, MAP_ASSET_KEYS } from "./mapAssets";
-export {
-  MAP_DRAG_THRESHOLD_PX,
-  MAP_SPEECH_BUBBLE_DEPTH,
-  NPC_BUBBLE_GAP,
-  NPC_BUBBLE_PADDING,
-  NPC_BUBBLE_TEXT_WRAP,
-} from "./mapConstants";
+export { MAP_DRAG_THRESHOLD_PX } from "./mapConstants";
 export {
   bundleToPlacedBuildings,
   bundleToPlacedLots,

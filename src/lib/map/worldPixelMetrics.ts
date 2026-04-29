@@ -1,13 +1,12 @@
-/** 기획: 36×20 타일 월드가 이 픽셀 크기로 표시됨 (타일당 가로·세로 비율 분리) */
-export const MAIN_MAP_PIXEL_WIDTH = 1902.85;
-export const MAIN_MAP_PIXEL_HEIGHT = 1080;
-
-export function tilePixelSizeForMap(
-  widthTiles: number,
-  heightTiles: number,
-): { tileWidthPx: number; tileHeightPx: number } {
-  return {
-    tileWidthPx: MAIN_MAP_PIXEL_WIDTH / widthTiles,
-    tileHeightPx: MAIN_MAP_PIXEL_HEIGHT / heightTiles,
-  };
+/** DB `map.tile_px` — 정사각 타일 한 변(px). 반드시 양수. */
+export function squareTilePixelSize(tilePx: number): {
+  tileWidthPx: number;
+  tileHeightPx: number;
+} {
+  if (!Number.isFinite(tilePx) || tilePx <= 0) {
+    throw new Error(
+      `map.tile_px 는 양의 유한 숫자여야 합니다 (받은 값: ${String(tilePx)})`,
+    );
+  }
+  return { tileWidthPx: tilePx, tileHeightPx: tilePx };
 }

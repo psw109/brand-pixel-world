@@ -1,8 +1,8 @@
 import { supabaseBrowserClient } from "@/lib/supabase/client";
-import { tilePixelSizeForMap } from "@/lib/map/worldPixelMetrics";
+import { squareTilePixelSize } from "@/lib/map/worldPixelMetrics";
 import type { MapAreaJson, WorldMapBundle } from "@/lib/map/worldMapTypes";
 
-/** PostgREST 임베드는 many-to-one이어도 클라이언트 타입이 배열로 올 수 있음 */
+/** supabase-js가 관계 임베드를 배열로 줄 때가 있어 첫 요소만 쓴다. */
 function embedOne<T>(v: T | T[] | null | undefined): T | undefined {
   if (v == null) return undefined;
   return Array.isArray(v) ? v[0] : v;
@@ -27,9 +27,7 @@ function parseArea(raw: unknown): MapAreaJson {
   return { tile_x, tile_y, width_tiles, height_tiles };
 }
 
-/**
- * slug 기본 `main` — Supabase `map` + 관련 테이블을 한 번에 불러 Phaser에 넘길 번들.
- */
+/** `map` slug와 연결된 타일·부지·오브젝트·건물을 한 번에 불러 Phaser용 번들로 만든다. */
 export async function loadWorldMapBundle(
   slug: string = "main",
 ): Promise<WorldMapBundle> {
@@ -48,10 +46,13 @@ export async function loadWorldMapBundle(
     throw new Error(`맵을 찾을 수 없습니다 (slug=${slug})`);
   }
 
-  const { tileWidthPx, tileHeightPx } = tilePixelSizeForMap(
-    mapRow.width_tiles,
-    mapRow.height_tiles,
-  );
+  const rawTilePx = mapRow.tile_px;
+  if (typeof rawTilePx !== "number" || !Number.isFinite(rawTilePx) || rawTilePx <= 0) {
+    throw new Error(
+      `맵 tile_px 필수이며 양수여야 합니다 (slug=${slug}, tile_px=${String(rawTilePx)})`,
+    );
+  }
+  const { tileWidthPx, tileHeightPx } = squareTilePixelSize(rawTilePx);
 
   const { data: defTile } = await supabase
     .from("tile_type")
@@ -137,6 +138,7 @@ export async function loadWorldMapBundle(
       slug: mapRow.slug,
       widthTiles: mapRow.width_tiles,
       heightTiles: mapRow.height_tiles,
+      tilePx: rawTilePx,
       defaultGroundTileKey: mapRow.default_ground_tile_key,
       defaultGroundSpritePath: defTile?.sprite_path ?? null,
       tileWidthPx,
