@@ -13,7 +13,7 @@
 - Next.js 앱이 로컬·Vercel에서 실행 가능
 - `main` → Vercel Production + 운영 Supabase, **non-`main`** Preview → 스테이징 Supabase(변수 설정 시)
 - GitHub Actions: `CI` + `supabase/migrations/**` 변경 시 스테이징/운영 `db push`
-- DB 스키마 정본: `supabase/migrations/` (현재 `20250401140000_bpw_core.sql` → `leads`, `lots`, `buildings` + RLS)
+- DB 스키마 정본: `supabase/migrations/` 전체(타임스탬프 순 적용). 초기 코어(`bpw_core`) 이후 **맵 스택**(`map_stack_rebuild` 등)·부지·건물 테이블이 확장되었다. 상세는 [`DB.md`](./DB.md).
 
 ---
 
@@ -34,8 +34,9 @@
 
 ### 3.1 마이그레이션 정본
 
-- 파일: `supabase/migrations/20250401140000_bpw_core.sql`
-- 스키마 변경 시 **새 타임스탬프 `.sql` 추가** 후 PR. SQL Editor만으로 원격을 바꾸면 레포와 어긋난다.
+- 위치: `supabase/migrations/*.sql` — **모든 파일이 순서대로 적용**된다.
+- 스키마 변경 시 **새 타임스탬프 `.sql` 추가** 후 PR. SQL Editor만으로 원격만 수정하면 레포와 어긋난다.
+- 맵·부지 모델 요약: [`DB.md`](./DB.md).
 
 ### 3.2 CLI로 원격에 적용
 
@@ -118,7 +119,7 @@ gh secret set SUPABASE_PRODUCTION_PROJECT_ID -b"<production-ref>"
 
 - 로컬: `npm run dev` → `localhost:3000`, `/api/health`
 - Vercel: `main` 배포 = Production, `dev`/`feat/*` = Preview
-- Supabase Table Editor: `leads`, `lots`, `buildings`, RLS ON
+- Supabase Table Editor: `map`, `map_tile`, `map_lot`, `map_building`, `lot_inquiry` 등 맵 스택 테이블 존재·RLS ON (정본은 마이그레이션)
 - Actions: `CI` 성공, 마이그레이션 워크플로는 Secrets·경로 조건 충족 시
 
 ---

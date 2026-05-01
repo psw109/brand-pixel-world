@@ -2,6 +2,8 @@
 
 **정본:** 맵·부지·에디터 관련 **스키마·겹침·렌더 규칙**의 기준은 본 문서와 `supabase/migrations/`의 타임스탬프 SQL이다. 둘이 어긋나면 **마이그레이션을 우선**하고 본 문서를 맞춘다.
 
+**연관:** 제품 개요는 [PROJECT.md](./PROJECT.md). 맵 에디터 UX는 [dev/MAP_EDITOR.md](./dev/MAP_EDITOR.md).
+
 ## 0. 문서 목적·범위
 
 **목적**

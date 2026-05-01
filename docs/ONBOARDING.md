@@ -61,5 +61,5 @@ npm run dev
 
 ## 6. 빠른 확인
 
-- 브라우저: `http://localhost:3000`
+- 브라우저: `http://localhost:3000` (홈), `http://localhost:3000/village` (Phaser 마을)
 - API: `http://localhost:3000/api/health`
