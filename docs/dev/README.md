@@ -4,5 +4,5 @@
 
 | 문서 | 내용 |
 |------|------|
-| [ADMIN.md](./ADMIN.md) | 관리자 URL·보안 |
+| [ADMIN.md](./ADMIN.md) | 관리자 URL·보안·코드 위치 (`src/app/admin`, `middleware.ts`) |
 | [MAP_EDITOR.md](./MAP_EDITOR.md) | 맵 에디터 UX·레이어·툴 |

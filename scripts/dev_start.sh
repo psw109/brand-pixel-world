@@ -135,6 +135,11 @@ print('==> .env.local 갱신 (로컬 Supabase URL · Publishable/anon 키)', fil
 
 ensure_docker
 
+# 이름 충돌(예: supabase_analytics_* already in use) 방지: CLI 로 한 번 내린 뒤 기동.
+# 이미 꺼져 있으면 빠르게 끝나며, 수동 docker rm 이 필요한 극단적 꼬임은 여전히 사용자가 처리.
+echo "==> 로컬 Supabase 기존 스택 중지 (있으면 정리 후 재시작)"
+npx supabase stop || true
+
 # 로컬 Postgres·Studio 등 컨테이너 기동 (npm 스크립트: supabase start)
 echo "==> Supabase 로컬 스택 시작 (Docker 필요)"
 npm run db:start

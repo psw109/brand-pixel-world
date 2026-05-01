@@ -57,6 +57,14 @@ git checkout main
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
+관리자 로그인(서버 전용, `NEXT_PUBLIC` 아님):
+
+- `ADMIN_SESSION_SECRET` (32자 이상 권장)
+- `ADMIN_LOGIN_ID`
+- `ADMIN_PASSWORD`
+
+동작·보안 요약은 [`docs/dev/ADMIN.md`](./dev/ADMIN.md).
+
 | Vercel 환경    | 값                                                                                                                                    |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | **Production** | 운영 Supabase (`brand-pixel-world`)                                                                                                   |

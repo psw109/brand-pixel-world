@@ -43,6 +43,13 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Build
+        env:
+          # 레포에 비밀이 없으므로 빌드 검증용 플레이스홀더 (실제 배포는 Vercel·.env.local)
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key-for-ci-build-only
+          ADMIN_SESSION_SECRET: "0123456789012345678901234567890123"
+          ADMIN_LOGIN_ID: ci-placeholder
+          ADMIN_PASSWORD: ci-placeholder
         run: npm run build
 
   notify:

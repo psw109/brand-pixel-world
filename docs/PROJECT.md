@@ -7,7 +7,7 @@
 | ---------- | ------------------------------------------------------------------ |
 | 2025-03-26 | 초안 작성                                                          |
 | 2025-03-26 | 부지·건물·레이어 개념 문서화                                       |
-| 2026-04-29 | 최신화·문서 트리는 [`README.md`](./README.md)로 통합, §번호 재정렬 |
+| 2026-04-29 | 최신화·문서 트리는 [`README.md`](./README.md)로 통합, §번호 재정렬; `/admin/**` 스캐폴드·JWT·환경변수 로그인 ([`dev/ADMIN.md`](./dev/ADMIN.md)) |
 
 ---
 
@@ -37,7 +37,7 @@
 ### 2.2 입점 문의·운영
 
 - 스키마상 접수는 **`lot_inquiry`** (부지 `lot_id` 연결). 예전 초안 문서의 `leads` 단일 테이블과는 다르다.
-- **관리자:** `/admin/inquiries` 계획 ([dev/ADMIN.md](./dev/ADMIN.md)). 인증·RLS는 구현 단계에서 정한다.
+- **관리자:** `/admin/login` 후 대시보드·`/admin/inquiries` 등 ([dev/ADMIN.md](./dev/ADMIN.md)). DB 쓰기 보호는 RLS가 정본.
 
 ---
 
@@ -46,6 +46,7 @@
 ### 3.1 구현된 것 (요약)
 
 - **Next.js App Router** 홈(`/`), **`/village`** 에서 Phaser 월드 ([`VillageGame`](../src/components/game/VillageGame.tsx) 등).
+- 관리자 **`/admin/login`** → JWT(HttpOnly 쿠키)·[`middleware.ts`](../src/middleware.ts)로 **`/admin/**`** 보호, 대시보드·에디터·문의 플레이스홀더. 자격 증명은 서버 환경변수 `ADMIN_*` ([`dev/ADMIN.md`](./dev/ADMIN.md)).
 - Supabase에서 **`loadWorldMapBundle`** 으로 맵 메타·타일·부지·건물·오브젝트 로드 (slug 기본 `main`).
 - **`map.tile_px`** 필수(정사각 타일 한 변 px). DB·클라 검증 일치.
 
